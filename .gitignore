@@ -7,8 +7,12 @@
 *.txt.user
 *test
 
+*.i
+*.s
+
 # Prerequisites
 *.d
+
 
 # Compiled Object files
 *.slo

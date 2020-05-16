@@ -1,0 +1,2 @@
+//预定义相关宏变量
+#cmakedefine USE_MYFUNC

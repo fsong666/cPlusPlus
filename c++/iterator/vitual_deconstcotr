@@ -1,0 +1,41 @@
+#include <iostream>
+class Base4
+{
+public:
+	Base4(int ii, int jj) :i(ii), j(jj) { cout << "调用基类的一般构造函数" << endl; }//基类的一般构造函数
+	Base4() :i(0), j(5203132) { cout << "调用基类的默认构造函数" << endl; }//基类的默认构造函数
+	~Base4() { cout << "调用基类的析构函数" << endl; }
+	void show_base() { cout << i << "\t" << j<<"\t"; }
+public:
+	int i;
+private:
+	int j;
+};
+ 
+class D4 :public Base4
+{
+public:
+	D4() :k(0) { cout << "调用派生类的默认构造函数" << endl; }//派生类的默认构造函数
+	D4(int ii, int jj, int kk) :Base4(ii, jj), k(kk) { }//派生类的一般构造函数
+	D4(int kk) : k(kk) {}//派生类的一般构造函数,隐式调用基类的默认构造函数
+	~D4() { cout << "调用派生类的析构函数" << endl; }
+ 
+	int k;
+	void show_d() { show_base(); cout << k << endl; }
+};
+ 
+//主函数
+int main()
+{
+	/*******************************************************************/
+	//  派生类的析构函数
+	/*******************************************************************/
+	cout << "D4 *pD4 = new D4:" << endl;
+	D4 *pD4 = new D4;
+ 
+	cout << "\ndelete pD4:" << endl;
+	delete pD4;
+ 
+	system("pause");
+	return 0;
+}

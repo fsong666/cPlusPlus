@@ -1,0 +1,45 @@
+#.o .d exe文件会在当前目录生成,make install后,请make clean
+all: main # other_projexes
+.PHONY : all
+
+PROJ = main
+SRCS_MAIN_PATH = main_dir/
+SRCS_OTHER_PATH = other/
+INCLUDE_PATH = include/
+INSTALL_PATH = build/
+SRCS_withPath = $(wildcard $(SRCS_MAIN_PATH)*.cpp $(SRCS_OTHER_PATH)*.cpp)
+SRCS = $(notdir $(SRCS_withPath))
+OBJS = $(patsubst %.cpp,%.o,$(SRCS)) 
+.PHONY : print
+print:
+	@echo $(SRCS_withPath)
+	@echo $(SRCS)
+	@echo $(OBJS)
+	@echo $(SRCS:.cpp=.d)
+
+CXX = g++ 
+CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra -Og
+CXXFLAGS += -I$(INCLUDE_PATH)
+# VPATH多目录由“冒号”分隔
+VPATH := $(INCLUDE_PATH):$(SRCS_MAIN_PATH):$(SRCS_OTHER_PATH)
+
+$(PROJ): $(OBJS)
+	@echo $(OBJS)
+	@echo $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+include $(SRCS:.cpp=.d)
+%.d: %.cpp
+	set -e; rm -f $@; \
+	$(CXX) -MM $(CXXFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+.PHONY : install
+install:
+	install $(PROJ) $(INSTALL_PATH)
+	@echo "cp completed"
+
+.PHONY : clean 
+clean: 
+	-rm -f $(OBJS) $(PROJ) $(SRCS:.cpp=.d)
